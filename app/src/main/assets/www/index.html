@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="description" content="CBMS Encoding App">
+  <meta name="author" content="Paul Victoriano Ocampo">
+
+  <title></title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.ico" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/leaflet/leaflet.css" rel="stylesheet">
+  <link href="assets/vendor/sweetalert2/sweetalert2.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <link href="assets/vendor/datatables/dataTables.bootstrap5.css" rel="stylesheet">
+</head>
+
+<body class="">
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <a class="logo d-flex align-items-center" href="#">
+        <!--<img src="file:///storage/emulated/0/Documents/CBMSEncode/cbms.png" alt="">-->
+        <img src="assets/img/cbms.png" alt="">
+        <span class="ms-2"><sup>CBMS Tabaco</sup></span>
+      </a>
+      <a id="toggle-sidebar-btn" class="hpq_page" hidden="hidden"><i class="bi bi-list toggle-sidebar-btn"></i></a>
+    </div><!-- End Logo -->
+
+    <nav class="header-nav ms-auto">
+      <ul id="topbar_nav" class="d-flex align-items-center">
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <span class="d-none d-md-block dropdown-toggle username"></span>
+            <i class="bi bi-emoji-sunglasses ps-2" style="font-size: 2rem; color: cornflowerblue;"> </i>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6><b class="username"></b></h6>
+              <span>User</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" onclick="getProfile();">
+                <i class="bi bi-gear me-2"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                <i class="bi bi-question-circle me-2"></i>
+                <span> Need Help?</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" onclick="logOut();">
+                <i class="bi bi-box-arrow-right me-2"></i>
+                <span> Sign Out</span>
+              </a>
+            </li>
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+      </ul>
+    </nav><!-- End Icons Navigation -->
+  </header><!-- End Header -->
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar" hidden="hidden">
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <section id="page" class="section dashboard">
+      <div class="row">
+        <div class="col-xl-3 col-md-6 col-sm-6 col-6">
+          <div class="card info-card mb-2 p-1">
+            <div class="card-body">
+              <h5 class="card-title">Households Surveyed <span>| All</span></h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-list"></i>
+                </div>
+                <div class="ps-3">
+                  <div class="h5 mb-0 font-weight-bold text-primary">
+                    <i id="total_encoded">
+                      <span class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </span>
+                    </i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-sm-6 col-6">
+          <div class="card info-card mb-2 p-1">
+            <div class="card-body">
+              <h5 class="card-title">Households Surveyed <span>| Today</span></h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-calendar text-info"></i>
+                </div>
+                <div class="ps-3">
+                  <div class="h5 mb-0 font-weight-bold text-info">
+                    <i id="encoded_today">
+                      <span class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </span>
+                    </i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-sm-6 col-6">
+          <div class="card info-card mb-2 p-1">
+            <div class="card-body">
+              <h5 class="card-title">Validated Household <span>| All</span></h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-check-lg text-success"></i>
+                </div>
+                <div class="ps-3">
+                  <div class="h5 mb-0 font-weight-bold text-success">
+                    <i id="validated_hpq">
+                      <span class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </span>
+                    </i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-sm-6 col-6 mb-1">
+          <div class="card info-card mb-2 p-1">
+            <div class="card-body">
+              <h5 class="card-title">Pending For Validation <span>| All</span></h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-pause-fill text-warning"></i>
+                </div>
+                <div class="ps-3">
+                  <div class="h5 mb-0 font-weight-bold text-warning">
+                    <i id="incomplete_hpq">
+                      <span class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </span>
+                    </i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card shadow mb-4">
+            <div class="card-header d-flex flex-row align-items-center justify-content-between mb-4">
+              <h5 class="card-title p-0 m-0 font-weight-bold">Encoded HPQs <span>| All</span></h5>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-success rounded-left" onclick="add_hpq();">
+                  <i class="bi bi-plus-circle"></i>
+                </button>
+                <button type="button" class="btn btn-primary" onclick="upload_hpq();">
+                  <i class="bi bi-upload"></i>
+                </button>
+                <button type="button" class="btn btn-secondary rounded-right" onclick="recoverInstancelist();">
+                  <i class="bi bi-arrow-repeat"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <form id="instancelist_form" method="post">
+                <div class="table-responsive">
+                  <table class="table table-hover text-dark" id="dashdataTable" width="100%">
+                    <thead>
+                      <tr class="bg-primary text-center text-light">
+                        <th>Barangay</th>
+                        <th>HCN</th>
+                        <th>Respondent</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboardTable"></tbody>
+                  </table>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <div class="required-field rounded">
+    <a class="icon" href="#" data-bs-toggle="dropdown">
+      <span class="m-2 text-light" id="requiredField"></span>
+    </a>
+    <ul id="reqFields" class="dropdown-menu dropdown-menu-end py-0 text-light"
+      style="width: 200px;  background: rgba(90, 92, 105, 0.75);">
+
+    </ul>
+  </div>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>CBMS Tabaco 2022</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      Developed by: <a href="#">Paul Victoriano Ocampo</a>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+    <i class="fa-solid fa-arrow-up"></i>
+  </a>
+
+  <!-- Map Modal -->
+  <div class="modal fade" id="getLocModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Capture location</h5>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"><i
+              class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body p-1">
+          <div id="map">
+            <div id="crosshair"><i class="bi bi-plus-circle"></i></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success btn-lg py-1" type="button" onclick="getLocation();">
+            <i class="bi bi-search me-2"></i><span>Find me</span>
+          </button>
+          <button class="btn btn-primary btn-lg py-1" type="button" onclick="getCoordinates();">
+            <i class="bi bi-check-lg me-2"></i><span>Capture</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Member Modal -->
+  <div class="modal fade" id="addmemModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add new member</h5>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"><i
+              class="bi bi-x-lg"></i></button>
+        </div>
+        <form id="addmem_form" method="post">
+          <div class="modal-body">
+            <div class="row">
+              <div class="basicinfo_div col-lg-12 col-xl-6">
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">C. Demography</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr hidden>
+                      <td><input name="id" id="id" value="" readonly></td>
+                    </tr>
+                    <tr hidden>
+                      <td><input name="hpq_id" id="hpq_id" value="" readonly></td>
+                    </tr>
+                    <tr hidden>
+                      <td><input name="memindex" id="memindex" value="" readonly></td>
+                    <tr>
+                      <td width="50%">7a. Last name</td>
+                      <td><input name="lname" id="lname" value="" type="text" class="form-control form-control-sm"
+                          required="required"></td>
+                    </tr>
+                    <tr>
+                      <td>7b. First name</td>
+                      <td><input name="fname" id="fname" value="" type="text" class="form-control form-control-sm"
+                          required="required"></td>
+                    </tr>
+                    <tr>
+                      <td>7c. Middle name</td>
+                      <td><input name="mname" id="mname" value="" type="text" class="form-control form-control-sm"
+                          required="required"></td>
+                    </tr>
+                    <tr>
+                      <td>8. Nuclear family</td>
+                      <td>
+                        <select name="nucfam" id="nucfam" class="form-control form-control-sm" aria-readonly="true">
+                          <option></option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>9. Relation to the head of the <strong>Household</strong></td>
+                      <td>
+                        <select name="reln" id="reln" class="form-control form-control-sm" required="required">
+                          <option></option>
+                          <option value="1">1 - Head</option>
+                          <option value="2">2 - Spouse</option>
+                          <option value="3">3 - Son/Daughter</option>
+                          <option value="4">4 - Son-in-Law/Daughter-in-Law</option>
+                          <option value="5">5 - Grandchildren</option>
+                          <option value="6">6 - Parents</option>
+                          <option value="7">7 - Father-in-Law/Mother-in-Law</option>
+                          <option value="8">8 - Brother/Sister</option>
+                          <option value="9">9 - Uncle/Aunt</option>
+                          <option value="10">10 - Grandparents</option>
+                          <option value="11">11 - Nephew/Niece</option>
+                          <option value="12">12 - Housemaid/Houseboy</option>
+                          <option value="13">13 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="reln_o_tr">
+                      <td>Other relation:</td>
+                      <td><input name="reln_o" id="reln_o" value="" type="text" class="form-control form-control-sm">
+                      </td>
+                    </tr>
+                    <tr class="reln2_tr">
+                      <td>10. Relation to the head of the <strong>Family</strong></td>
+                      <td>
+                        <select name="reln2" id="reln2" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Head</option>
+                          <option value="2">2 - Spouse</option>
+                          <option value="3">3 - Son/Daughter</option>
+                          <option value="4">4 - Son-in-Law/Daughter-in-Law</option>
+                          <option value="5">5 - Grandchildren</option>
+                          <option value="6">6 - Parents</option>
+                          <option value="7">7 - Father-in-Law/Mother-in-Law</option>
+                          <option value="8">8 - Brother/Sister</option>
+                          <option value="9">9 - Uncle/Aunt</option>
+                          <option value="10">10 - Grandparents</option>
+                          <option value="11">11 - Nephew/Niece</option>
+                          <option value="12">12 - Housemaid/Houseboy</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="reln2_o_tr">
+                      <td>Other relation:</td>
+                      <td><input name="reln2_o" id="reln2_o" value="" type="text" class="form-control form-control-sm">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>11a. Birth date</td>
+                      <td><input name="birthdate" id="birthdate" value="" type="date"
+                          class="form-control form-control-sm" required="required"></td>
+                    </tr>
+                    <tr>
+                      <td>11b. Age</td>
+                      <td>
+                        <input name="age_yr" id="age" value="" min="0" max="125" type="number"
+                          class="form-control form-control-sm col-6" required="required" readonly>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>12. Sex</td>
+                      <td>
+                        <select name="sex" id="sex" class="form-control form-control-sm" required="required">
+                          <option></option>
+                          <option value="1">1 - Male</option>
+                          <option value="2">2 - Female</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="gender">
+                      <td>13a. Is <strong><i class="dfname">_____</i></strong> a member of LGBTQIA
+                      </td>
+                      <td>
+                        <select name="gender" id="gender" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="gender_t">
+                      <td>13b. <strong><i class="dfname">_____</i></strong> a?</td>
+                      <td>
+                        <select name="gender_t" id="gender_t" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Lesbian</option>
+                          <option value="2">2 - Gay</option>
+                          <option value="3">3 - Bisexual</option>
+                          <option value="4">4 - Trangender</option>
+                          <option value="5">5 - Queer</option>
+                          <option value="6">6 - Intersex</option>
+                          <option value="7">7 - Asexual</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>14. Registered birth</td>
+                      <td>
+                        <select name="regbirth" id="regbirth" class="form-control form-control-sm" required="required">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="civstat">
+                      <td>15. Civil status</td>
+                      <td>
+                        <select name="civstat" id="civstat" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Single</option>
+                          <option value="2">2 - Married</option>
+                          <option value="3">3 - Widow</option>
+                          <option value="4">4 - Separated</option>
+                          <option value="5">5 - Common Law/Live-In</option>
+                          <option value="6">6 - Don't know</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>16a. Religion</td>
+                      <td>
+                        <select name="religion" id="religion" class="form-control form-control-sm" required="required">
+                          <option></option>
+                          <option value="1">1 - Roman Catholic</option>
+                          <option value="2">2 - Protestant</option>
+                          <option value="3">3 - Iglesia Ni Cristo</option>
+                          <option value="4">4 - Aglipay</option>
+                          <option value="5">5 - Islam</option>
+                          <option value="6">6 - Mormons</option>
+                          <option value="6">7 - Jehova's Witnesses</option>
+                          <option value="6">8 - 7th-day Adventists</option>
+                          <option value="7">9 - Others</option>
+                          <option value="8">10 - None</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="religion_o">
+                      <td class="float-right">Other religion</td>
+                      <td><input name="religion_o" id="religion_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                    <tr>
+                      <td>17a. Ethnicity by blood</td>
+                      <td>
+                        <select name="ethgrp" id="ethgrp" class="form-control form-control-sm" required="required">
+                          <option></option>
+                          <option value="1">1 - Bikolnon</option>
+                          <option value="2">2 - Ibanag</option>
+                          <option value="3">3 - Kankanay</option>
+                          <option value="4">4 - Mangyan</option>
+                          <option value="5">5 - Ibaloi</option>
+                          <option value="6">6 - Aeta</option>
+                          <option value="7">7 - Tagbanuas</option>
+                          <option value="8">8 - Cuyonen</option>
+                          <option value="9">9 - Subanen</option>
+                          <option value="10">10 - B'laan</option>
+                          <option value="11">11 - Mandaya</option>
+                          <option value="12">12 - Manobo</option>
+                          <option value="13">13 - Teduray</option>
+                          <option value="14">14 - Bukidnon</option>
+                          <option value="15">15 - Ati</option>
+                          <option value="16">16 - Cimaron</option>
+                          <option value="17">17 - Itom</option>
+                          <option value="18">18 - Pullon</option>
+                          <option value="19">19 - Badjao</option>
+                          <option value="20">20 - Batak</option>
+                          <option value="21">21 - Palawano</option>
+                          <option value="22">22 - Tau't Bato</option>
+                          <option value="23">23 - Dumagat</option>
+                          <option value="24">24 - T'boli</option>
+                          <option value="25">25 - ago</option>
+                          <option value="26">26 - Others</option>
+                          <option value="27">27 - None</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ethgrp_o">
+                      <td class="float-right">Other ethnic group</td>
+                      <td><input name="ethgrp_o" id="ethgrp_o" value="" type="text"
+                          class="form-control form-control-sm">
+                      </td>
+                    </tr>
+                    <tr class="ofwind_tr">
+                      <td>18. Is <i><b class="dfname">_____</b></i> an OFW</td>
+                      <td>
+                        <select name="ofwind" id="ofwind" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="mlenres_tr">
+                      <td>19. Address last 12 months</td>
+                      <td>
+                        <select name="mlenres" id="mlenres" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Same address</option>
+                          <option value="2">2 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="mlenres_o_tr">
+                      <td class="float-right">Address 12 months ago</td>
+                      <td><input name="mlenres_o" id="mlenres_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-lg-12 col-xl-6 ofw">
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">For Overseas Filipino Workers</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="50%">20. Is <i><b class="dfname">_____</b></i> Land-based or
+                        Sea-based</td>
+                      <td>
+                        <select name="ofw_land_sea" id="ofw_land_sea" class="form-control form-control-sm ofw_inputs">
+                          <option></option>
+                          <option value="1">1 - Land-based</option>
+                          <option value="2">2 - Sea-based</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>21. Country</td>
+                      <td><input name="ofw_country" id="ofw_country" value="" type="text"
+                          class="form-control form-control-sm ofw_inputs"></td>
+                    </tr>
+                    <tr>
+                      <td>22. Length of stay</td>
+                      <td><input name="ofw_len_stay" id="ofw_len_stay" value="" type="number" min="0"
+                          class="form-control form-control-sm ofw_inputs" placeholder="Number of months"></td>
+                    </tr>
+                    <tr>
+                      <td>23. Reason for leaving Philippines</td>
+                      <td>
+                        <select name="ofw_reason_leave" id="ofw_reason_leave"
+                          class="form-control form-control-sm ofw_inputs">
+                          <option></option>
+                          <option value="1">1 - Overseas Contract Worker</option>
+                          <option value="2">2 - Worker (Not OCW)</option>
+                          <option value="3">3 - Working at PH Embassy/Consulate abroad
+                          </option>
+                          <option value="4">4 - Tourist</option>
+                          <option value="5">5 - Student</option>
+                          <option value="6">6 - Imigrant</option>
+                          <option value="7">7 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ofw_reason_leave_o_tr">
+                      <td class="float-right">Other reason</td>
+                      <td><input name="ofw_reason_leave_o" id="ofw_reason_leave_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                    <tr>
+                      <td>24. Primary reason for returning to Philippines</td>
+                      <td>
+                        <select name="ofw_reason_return" id="ofw_reason_return"
+                          class="form-control form-control-sm ofw_inputs">
+                          <option></option>
+                          <option value="1">1 - Vacation</option>
+                          <option value="2">2 - Finished contract</option>
+                          <option value="3">3 - Working at PH Embassy/Consulate abroad
+                          </option>
+                          <option value="4">4 - Permanent return</option>
+                          <option value="5">5 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ofw_reason_return_o_tr">
+                      <td class="float-right">Other reason</td>
+                      <td><input name="ofw_reason_return_o" id="ofw_reason_return_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                    <tr>
+                      <td>25. Planning to stay permanently in the Philippines</td>
+                      <td>
+                        <select name="ofw_stay_permanent" id="ofw_stay_permanent"
+                          class="form-control form-control-sm ofw_inputs">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>26. Plans for returning to the Philippines</td>
+                      <td>
+                        <select name="ofw_plans_return" id="ofw_plans_return"
+                          class="form-control form-control-sm ofw_inputs">
+                          <option></option>
+                          <option value="1">1 - Retire</option>
+                          <option value="2">2 - Start a business</option>
+                          <option value="3">3 - Find a work</option>
+                          <option value="4">4 - Volunteer</option>
+                          <option value="5">5 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ofw_plans_return_o_tr">
+                      <td class="float-right">Other plan upon returning</td>
+                      <td><input name="ofw_plans_return_o" id="ofw_plans_return_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                    <tr>
+                      <td>27. Where the last remitance spent</td>
+                      <td>
+                        <select name="ofw_remit_spent" id="ofw_remit_spent"
+                          class="form-control form-control-sm ofw_inputs">
+                          <option></option>
+                          <option value="1">1 - Consumptions</option>
+                          <option value="2">2 - Investments</option>
+                          <option value="3">3 - Savings</option>
+                          <option value="4">4 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ofw_remit_spent_o_tr">
+                      <td class="float-right">Other</td>
+                      <td><input name="ofw_remit_spent_o" id="ofw_remit_spent_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                    <tr>
+                      <td>28. Services to avail</td>
+                      <td>
+                        <select name="ofw_services" id="ofw_services" class="form-control form-control-sm ofw_inputs">
+                          <option></option>
+                          <option value="1">1 - Financial literacy Training</option>
+                          <option value="2">2 - Leadership and Management Training</option>
+                          <option value="3">3 - Information Technology Related Training
+                          </option>
+                          <option value="4">4 - Communication skills Training</option>
+                          <option value="5">5 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ofw_services_o_tr">
+                      <td class="float-right">Other service</td>
+                      <td><input name="ofw_services_o" id="ofw_services_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-lg-12 col-xl-6 educ">
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">D. Education</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="2" class="float-center"><b>For 3 years old and above</b></td>
+                    </tr>
+                    <tr class="educ">
+                      <td width="50%">29. Is <i><b class="dfname">_____</b></i> currently
+                        attending school</td>
+                      <td>
+                        <select name="educind" id="educind" class="form-control form-control-sm educ_inputs">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="gradel_tr">
+                      <td>30. Grade/Year</td>
+                      <td>
+                        <select name="gradel" id="gradel" class="form-control form-control-sm educ_inputs">
+                          <optgroup>
+                            <option></option>
+                            <option value="0">0 - No grade</option>
+                            <option value="1">1 - Day Care</option>
+                            <option value="2">2 - Kindergarten/Preparatory</option>
+                          </optgroup>
+                          <optgroup label="Grade School">
+                            <option value="11">11 - Grade I</option>
+                            <option value="12">12 - Grade II</option>
+                            <option value="13">13 - Grade III</option>
+                            <option value="14">14 - Grade IV</option>
+                            <option value="15">15 - Grade V</option>
+                            <option value="16">16 - Grade VI</option>
+                          </optgroup>
+                          <optgroup label="Junior High School">
+                            <option value="17">17 - Grade VII</option>
+                            <option value="18">18 - Grade VIII</option>
+                            <option value="19">19 - Grade IX/3rd Year High School</option>
+                            <option value="20">20 - Grade X/4th Year High School</option>
+                          </optgroup>
+                          <optgroup label="Senior High School">
+                            <option value="21">21 - Grade XI</option>
+                            <option value="22">22 - Grade XII</option>
+                          </optgroup>
+                          <optgroup label="Technical Vocational">
+                            <option value="23">23 - 1st Year PS/N-TV</option>
+                            <option value="24">24 - 2nd Year PS/N-TV</option>
+                            <option value="25">25 - 3rd Year PS/N-TV</option>
+                          </optgroup>
+                          <optgroup label="College">
+                            <option value="31">31 - 1st Year College</option>
+                            <option value="32">32 - 2nd Year College</option>
+                            <option value="33">33 - 3rd Year College</option>
+                            <option value="34">34 - 3rd Year College</option>
+                          </optgroup>
+                          <optgroup label="Masters/PhD">
+                            <option value="41">41 - Post Grad w/ units, specify course
+                            </option>
+                          </optgroup>
+                          <optgroup label="ALS/SPED">
+                            <option value="51">51 - ALS Elementary</option>
+                            <option value="52">52 - ALS Secondary</option>
+                            <option value="53">53 - SPED Elementary</option>
+                            <option value="54">54 - SPED Secondary</option>
+                          </optgroup>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="course_tr">
+                      <td class="float-right">Course</td>
+                      <td><input name="course" id="course" value="" type="text"
+                          class="form-control form-control-sm educ_inputs"></td>
+                    </tr>
+                    <tr class="schtype_tr">
+                      <td>31. Type of school</td>
+                      <td>
+                        <select name="schtype" id="schtype" class="form-control form-control-sm educ_inputs">
+                          <option></option>
+                          <option value="1">1 - Public school</option>
+                          <option value="2">2 - Private school</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ynotsch_tr">
+                      <td>32. Reason for not attending school</td>
+                      <td>
+                        <select name="ynotsch" id="ynotsch" class="form-control form-control-sm educ_inputs">
+                          <option></option>
+                          <option value="1">1 - Schools are very far</option>
+                          <option value="2">2 - No schools within the barangay</option>
+                          <option value="3">3 - No regular transportation</option>
+                          <option value="4">4 - High cost of education</option>
+                          <option value="5">5 - Illness/Disability</option>
+                          <option value="6">6 - Housekeeping/ taking care of siblings</option>
+                          <option value="7">7 - Marriage</option>
+                          <option value="8">8 - Employment/Looking for work</option>
+                          <option value="9">9 - Lack of interest</option>
+                          <option value="10">10 - Cannot cope with school work</option>
+                          <option value="11">11 - Finished schooling</option>
+                          <option value="12">12 - Problem with school record</option>
+                          <option value="13">13 - Problem with birth certificate</option>
+                          <option value="14">14 - Too young to go to school</option>
+                          <option value="15">15 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="ynotsch_o_tr">
+                      <td class="float-right">Other reason for not attending school</td>
+                      <td><input name="ynotsch_o" id="ynotsch_o" value="" type="text"
+                          class="form-control form-control-sm educ_inputs"></td>
+                    </tr>
+                    <tr class="educ">
+                      <td>33. Highest educational attainment</td>
+                      <td>
+                        <select name="educal" id="educal" class="form-control form-control-sm educ_inputs">
+                          <optgroup>
+                            <option></option>
+                            <option value="0">0 - No grade</option>
+                            <option value="1">1 - Day Care</option>
+                            <option value="2">2 - Kindergarten/Preparatory</option>
+                          </optgroup>
+                          <optgroup label="Grade School">
+                            <option value="11">11 - Grade I</option>
+                            <option value="12">12 - Grade II</option>
+                            <option value="13">13 - Grade III</option>
+                            <option value="14">14 - Grade IV</option>
+                            <option value="15">15 - Grade V</option>
+                            <option value="16">16 - Grade VI</option>
+                          </optgroup>
+                          <optgroup label="Junior High School">
+                            <option value="17">17 - Grade VII</option>
+                            <option value="18">18 - Grade VIII</option>
+                            <option value="19">19 - Grade IX/3rd Year High School</option>
+                            <option value="20">20 - Grade X/4th Year High School</option>
+                          </optgroup>
+                          <optgroup label="Senior High School">
+                            <option value="21">21 - Grade XI</option>
+                            <option value="22">22 - Grade XII</option>
+                          </optgroup>
+                          <optgroup label="Technical Vocational">
+                            <option value="23">23 - 1st Year PS/N-TV</option>
+                            <option value="24">24 - 2nd Year PS/N-TV</option>
+                            <option value="25">25 - 3rd Year PS/N-TV</option>
+                          </optgroup>
+                          <optgroup label="College">
+                            <option value="31">31 - 1st Year College</option>
+                            <option value="32">32 - 2nd Year College</option>
+                            <option value="33">33 - 3rd Year College</option>
+                            <option value="34">34 - 3rd Year College</option>
+                          </optgroup>
+                          <optgroup label="Masters/PhD">
+                            <option value="41">41 - Post Grad w/ units, specify course
+                            </option>
+                          </optgroup>
+                          <optgroup label="---------------">
+                            <option value="51">51 - ALS Elementary</option>
+                            <option value="52">52 - ALS Secondary</option>
+                            <option value="53">53 - SPED Elementary</option>
+                            <option value="54">54 - SPED Secondary</option>
+                            <option value="100">100 - Grade School Graduate</option>
+                            <option value="200">200 - High School Graduate</option>
+                            <option value="210">210 - Post Secondary Graduate</option>
+                            <option value="300">300 - College Graduate, specify course
+                            </option>
+                            <option value="400">400 - Masters/PhD Graduate, specify course
+                            </option>
+                          </optgroup>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="fcourse_tr">
+                      <td class="float-right">Course</td>
+                      <td><input name="fcourse" id="fcourse" value="" type="text"
+                          class="form-control form-control-sm educ_inputs"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table table-sm table-borderless text-dark literacy" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <td colspan="2" class="float-center"><b>For 5 years old and above</b></td>
+                    </tr>
+                  </thead>
+                  <tr>
+                    <td width="50%">34. Can <i><b class="dfname">_____</b></i> read/write simple
+                      language</td>
+                    <td>
+                      <select name="literind" id="literind" class="form-control form-control-sm">
+                        <option></option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr class="lang_tr">
+                    <td>35. Language spoken</td>
+                    <td>
+                      <select name="lang" id="lang" class="form-control form-control-sm lang">
+                        <option></option>
+                        <option value="1">1 - Tagalog</option>
+                        <option value="2">2 - Hiligaynon/Ilongo</option>
+                        <option value="3">3 - Cebuano</option>
+                        <option value="4">4 - Ilocano</option>
+                        <option value="5">5 - Waray</option>
+                        <option value="6">6 - Bikol</option>
+                        <option value="7">7 - Kapampangan</option>
+                        <option value="8">8 - Other, specify</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr class="lang_o_tr">
+                    <td class="float-right">Other language</td>
+                    <td><input name="lang_o" id="lang_o" value="" type="text" class="form-control form-control-sm"></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-lg-12 col-xl-6 job">
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">E. Economic activity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="50%">36. Did <i><b class="dfname">_____</b></i> have any paid
+                        work for atleast 1 hour
+                        during the
+                        past
+                        week</td>
+                      <td>
+                        <select name="jobind" id="jobind" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="occup_tr">
+                      <td>37. Occupation</td>
+                      <td><input name="occup" id="occup" value="" type="text"
+                          class="form-control form-control-sm job_inputs"></td>
+                    </tr>
+                    <tr class="occup_tr">
+                      <td>38. Industry</td>
+                      <td><input name="indust" id="indust" value="" type="text"
+                          class="form-control form-control-sm job_inputs"></td>
+                    </tr>
+                    <tr class="15up_tr">
+                      <td colspan="2" class="float-center"><b>For 15 years old and above</b></td>
+                    </tr>
+                    <tr class="15up_tr">
+                      <td>39. Nature of work</td>
+                      <td>
+                        <select name="jobstat" id="jobstat" class="form-control form-control-sm job_inputs_15up">
+                          <option></option>
+                          <option value="1">1 - Permanent</option>
+                          <option value="2">2 - Short-term, seasonal or casual</option>
+                          <option value="3">3 - Worked on different jobs on day to day or week
+                            to week</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="15up_tr">
+                      <td>40. Class of worker</td>
+                      <td>
+                        <select name="workclass" id="workclass" class="form-control form-control-sm job_inputs_15up">
+                          <option></option>
+                          <option value="1">1 - Working for private household</option>
+                          <option value="2">2 - Working for private/farm</option>
+                          <option value="3">3 - Working for government/corporation</option>
+                          <option value="4">4 - Self-employed without any employee</option>
+                          <option value="5">5 - Employer in own familyoperated or business
+                          </option>
+                          <option value="6">6 - Working with pay on family-operated or
+                            business</option>
+                          <option value="7">7 - Working without pay on family-operated or
+                            business</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="15up_tr">
+                      <td>41a. Total salary/wage last 12 months (incash)</td>
+                      <td><input name="wagecash" id="wagecash" value="" type="number"
+                          class="form-control form-control-sm job_inputs_15up"></td>
+                    </tr>
+                    <tr class="15up_tr">
+                      <td>41b. Total salary/wage last 12 months (inkind)</td>
+                      <td><input name="wagekind" id="wagekind" value="" type="number"
+                          class="form-control form-control-sm job_inputs_15up"></td>
+                    </tr>
+                    <tr class="15up_tr">
+                      <td>42. SSS or GSIS member</td>
+                      <td>
+                        <select name="sss" id="sss" class="form-control form-control-sm job_inputs_15up">
+                          <option></option>
+                          <option value="1">1 - SSS</option>
+                          <option value="2">2 - GSIS</option>
+                          <option value="3">3 - Both SSS and GSIS</option>
+                          <option value="4">4 - None</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-lg-12 col-xl-6">
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">F. Crime</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="50%">43. Is <i><b class="dfname">_____</b></i> a victim of crime
+                      </td>
+                      <td>
+                        <select name="crime" id="crime" class="form-control form-control-sm" required="required">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="crimetype_tr">
+                      <td>Type of crime</td>
+                      <td>
+                        <select name="crimetype" id="crimetype" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Theft</option>
+                          <option value="2">2 - Robbery</option>
+                          <option value="3">3 - Rape</option>
+                          <option value="4">4 - Physical Injury</option>
+                          <option value="5">5 - Carnapping</option>
+                          <option value="6">6 - Cuttle Rustling</option>
+                          <option value="7">7 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="crimetype_o_tr">
+                      <td class="float-right">Other type of crime</td>
+                      <td><input name="crimetype_o" id="crimetype_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">G. Health - I</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="50%">44. Type of PhilHealth</td>
+                      <td>
+                        <select name="philhealthtype" id="philhealthtype" class="form-control form-control-sm"
+                          required="required">
+                          <option></option>
+                          <option value="1">1 - Sponsored/indigents</option>
+                          <option value="2">2 - Employed</option>
+                          <option value="3">3 - Individually paying / voluntary</option>
+                          <option value="4">4 - Lifetime due to retirement</option>
+                          <option value="5">5 - OFW</option>
+                          <option value="6">6 - None</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>45. Healthcare provider</td>
+                      <td>
+                        <select name="healthcareprovider" id="healthcareprovider" class="form-control form-control-sm"
+                          required="required">
+                          <option></option>
+                          <option value="1">1 - National Public Hospital</option>
+                          <option value="2">2 - Provincial Public Hospital</option>
+                          <option value="3">3 - District Public Hospital</option>
+                          <option value="4">4 - Private Hospital/Clinic</option>
+                          <option value="5">5 - Rural Health Units</option>
+                          <option value="6">6 - Brgy. Health Station/Center</option>
+                          <option value="7">7 - Non-medical/non-trained Hilot/Personnel
+                          </option>
+                          <option value="8">8 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="healthcareprovider_o_tr">
+                      <td class="float-right">Other provider of health care</td>
+                      <td><input name="healthcareprovider_o" id="healthcareprovider_o" value="" type="text"
+                          class="form-control form-control-sm"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table table-sm table-borderless text-dark soloparent" width="100%" cellspacing="0">
+                  <tbody>
+                    <tr>
+                      <td width="50%">46. Is <i><b class="dfname">_____</b></i> a solo-parent</td>
+                      <td>
+                        <select name="uniparind" id="uniparind" class="form-control form-control-sm sp_inputs">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="uniparreason_tr">
+                      <td>47. Reason for being solo-parent</td>
+                      <td>
+                        <select name="uniparreason" id="uniparreason" class="form-control form-control-sm sp_inputs">
+                          <option></option>
+                          <option value="1">1 - Death of spouse</option>
+                          <option value="2">2 - Imprisonment of spouse for at least one year
+                          </option>
+                          <option value="3">3 - Mental and physical incapacity of spouse
+                          </option>
+                          <option value="4">4 - Legal or de facto separation from spouse for
+                            at least one year</option>
+                          <option value="5">5 - Annulment of marriage as decreed by court or
+                            church</option>
+                          <option value="6">6 - Abandonment of spouse for at least one year
+                          </option>
+                          <option value="7">7 - Unmarried mother or father who preferred to
+                            keep the child instead of
+                            others caring for him/her</option>
+                          <option value="8">8 - Any other person who solely provides parental
+                            care and support to a
+                            child
+                            provided he/she is a duly licensed foster parent of DSWD, or
+                            duly appointed legal guardian
+                            by
+                            the court through adoption or legal guardianship</option>
+                          <option value="9">9 - Any family member who solely assumes the
+                            responsibility as head of the
+                            family as a result of death, abandonment, prolonged absence, or
+                            disappearance of parent for
+                            at
+                            least one year</option>
+                          <option value="10">10 - Other reasons, specify</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="uniparreason_o_tr">
+                      <td class="float-right">Other reason for being a solo-parent</td>
+                      <td><input name="uniparreason_o" id="uniparreason_o" value="" type="text"
+                          class="form-control form-control-sm sp_inputs"></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table class="table table-sm table-borderless pwd text-dark" width="100%" cellspacing="0">
+                  <tbody>
+                    <tr>
+                      <td width="50%">48. Is <i><b class="dfname">_____</b></i> a person with
+                        disability</td>
+                      <td>
+                        <select name="pwdind" id="pwdind" class="form-control form-control-sm pwdind">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="pwdtype_tr pwd_inputs_tr">
+                      <td>49. Type of disabilty</td>
+                      <td>
+                        <select name="pwdtype" id="pwdtype" class="form-control form-control-sm pwd_inputs">
+                          <option></option>
+                          <option value="1">1 - Total Blindness</option>
+                          <option value="2">2 - Partially Blindness</option>
+                          <option value="3">3 - Low Vision</option>
+                          <option value="4">4 - Totally Deaf</option>
+                          <option value="5">5 - Partially Deaf</option>
+                          <option value="6">6 - Oral Defect</option>
+                          <option value="7">7 - One Hand</option>
+                          <option value="8">8 - No Hands</option>
+                          <option value="9">9 - One Leg</option>
+                          <option value="10">10 - No Legs</option>
+                          <option value="11">11 - Mild Cerebral Palsy</option>
+                          <option value="12">12 - Severe Cerebral Palsy</option>
+                          <option value="13">13 - Retarded</option>
+                          <option value="14">14 - Mentally Ill</option>
+                          <option value="15">15 - Mental Retardation</option>
+                          <option value="16">16 - Multiple impairment</option>
+                          <option value="17">17 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="pwdtype_o_tr pwd_inputs_o_tr">
+                      <td class="float-right">Other type of disability</td>
+                      <td><input name="pwdtype_o" id="pwdtype_o" value="" type="text"
+                          class="form-control form-control-sm pwd_inputs"></td>
+                    </tr>
+                    <tr class="pwdcause_tr pwd_inputs_tr">
+                      <td>50. Cause of disabilty</td>
+                      <td>
+                        <select name="pwdcause" id="pwdcause" class="form-control form-control-sm pwd_inputs">
+                          <option></option>
+                          <option value="1">1 - In-born</option>
+                          <option value="2">2 - Illness</option>
+                          <option value="3">3 - Accident</option>
+                          <option value="4">4 - Old age</option>
+                          <option value="5">5 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="pwdcause_o_tr pwd_inputs_o_tr">
+                      <td class="float-right">Other cause of disability</td>
+                      <td><input name="pwdcause_o" id="pwdcause_o" value="" type="text"
+                          class="form-control form-control-sm pwd_inputs"></td>
+                    </tr>
+                    <tr class="pwdid_tr pwd_inputs_tr">
+                      <td>51. Does <i><b class="dfname">_____</b></i> have a PWD ID</td>
+                      <td>
+                        <select name="pwdid" id="pwdid" class="form-control form-control-sm pwd_inputs">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table table-sm table-borderless text-dark seniorcitizen" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Senior Citizen</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="50%">52. Does <i><b class="dfname">_____</b></i> have a Senior
+                        Citizen ID</td>
+                      <td>
+                        <select name="scid" id="scid" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-lg-12 col-xl-6">
+                <table class="table table-sm table-borderless text-dark familyplanning" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Family planning</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="50%">53. Does <i><b class="dfname">_____</b></i> using <br> any
+                        type of family planning
+                        method?
+                      </td>
+                      <td>
+                        <select name="famplanind" id="famplanind" class="form-control form-control-sm">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="fp_meth_tr">
+                      <td>54. Family planning method</td>
+                      <td>
+                        <select name="fp_meth" id="fp_meth" class="form-control form-control-sm fp_inputs">
+                          <option></option>
+                          <option value="1">1 - Male sterilization</option>
+                          <option value="2">2 - Female sterilization</option>
+                          <option value="3">3 - Pill</option>
+                          <option value="4">4 - IUD</option>
+                          <option value="5">5 - Injectible</option>
+                          <option value="6">6 - Implants</option>
+                          <option value="7">7 - Patch</option>
+                          <option value="8">8 - Condom</option>
+                          <option value="9">9 - Female Condom</option>
+                          <option value="10">10 - Diaphragm</option>
+                          <option value="11">11 - Foam/Jelly/Cream</option>
+                          <option value="12">12 - Mucus, Billings, Ovulation</option>
+                          <option value="13">13 - Basal Body Temperature</option>
+                          <option value="14">14 - Symptothermal</option>
+                          <option value="15">15 - Standard days method</option>
+                          <option value="16">16 - Calendar/Rhythm/Periodic Abstinence</option>
+                          <option value="17">17 - Withdrawal</option>
+                          <option value="18">18 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="fp_meth_o_tr">
+                      <td class="float-right">Other method of family planning</td>
+                      <td><input name="fp_meth_o" id="fp_meth_o" value="" type="text"
+                          class="form-control form-control-sm fp_inputs"></td>
+                    </tr>
+                    <tr class="fp_provider_tr">
+                      <td>55. Provider of family planning method</td>
+                      <td>
+                        <select name="fp_provider" id="fp_provider" class="form-control form-control-sm fp_inputs">
+                          <option></option>
+                          <option value="1">1 - Barangay Health Center</option>
+                          <option value="2">2 - City Health Unit</option>
+                          <option value="3">3 - Lying-in (Private)</option>
+                          <option value="4">4 - Lying-in (Government)</option>
+                          <option value="5">5 - Pharmacy</option>
+                          <option value="6">6 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="fp_provider_o_tr">
+                      <td class="float-right">Other provider of family planning method</td>
+                      <td><input name="fp_provider_o" id="fp_provider_o" value="" type="text"
+                          class="form-control form-control-sm fp_inputs"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table table-sm table-borderless text-dark sdg" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Reproduction and child survival</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="50%">56. Is <i><b class="dfname">_____</b></i> pregnant</td>
+                      <td>
+                        <select name="sdg_pregind" id="sdg_pregind"
+                          class="form-control form-control-sm rcs_inputs sdg_inputs">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>57. Number of child born</td>
+                      <td><input name="sdg_numchildborn" id="sdg_numchildborn" value="" type="number" min="0" max="30"
+                          class="form-control form-control-sm rcs_inputs sdg_inputs"></td>
+                    </tr>
+                    <tr class="sdg_preg5years_tr">
+                      <td>58. Did <i><b class="dfname">_____</b></i> got pregnant/delivered a
+                        child in the past 5 years?
+                      </td>
+                      <td>
+                        <select name="sdg_preg5years" id="sdg_preg5years"
+                          class="form-control form-control-sm sdg_inputs">
+                          <option></option>
+                          <option value="1">1 - Yes</option>
+                          <option value="2">2 - No</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table table-sm table-borderless text-dark sdg_preg5years_tb" width="100%" cellspacing="0">
+                  <tr>
+                    <th colspan="2">For women who got pregnant and/or gave birth during the past 5
+                      years</th>
+                  </tr>
+                  <tr>
+                    <td width="50%">59. Child died 0-11 months old</td>
+                    <td><input name="sdg_died011months" id="sdg_died011months" value="" type="number" min="0" max="30"
+                        class="form-control form-control-sm sdg_withchild sdg_inputs"></td>
+                  </tr>
+                  <tr>
+                    <td>60. Child died 12-59 months old</td>
+                    <td><input name="sdg_died1259months" id="sdg_died1259months" value="" type="number" min="0" max="30"
+                        class="form-control form-control-sm sdg_withchild sdg_inputs"></td>
+                  </tr>
+                  <tr>
+                    <td>61. Had miscarriage/still birth/abortion</td>
+                    <td>
+                      <select name="sdg_stillbirth" id="sdg_stillbirth" id="sdg_stillbirth"
+                        class="form-control form-control-sm sdg_withchild sdg_inputs">
+                        <option></option>
+                        <option value="0">0 - None</option>
+                        <option value="1">1 - Abortion</option>
+                        <option value="2">2 - Miscarriage</option>
+                        <option value="3">3 - Still birth</option>
+                        <option value="4">4 - Both 1 and 2</option>
+                        <option value="5">5 - Both 2 and 3</option>
+                        <option value="6">6 - All 1, 2 and 3</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>62. Where did <i><b class="dfname">_____</b></i> deliver her youngest child?
+                    </td>
+                    <td>
+                      <select name="sdg_childdelivery" id="sdg_childdelivery"
+                        class="form-control form-control-sm sdg_withchild sdg_inputs">
+                        <option></option>
+                        <option value="1">1 - House</option>
+                        <option value="2">2 - Government Health Center (BHS/RHU/UUHC)</option>
+                        <option value="3">3 - Government Hospital</option>
+                        <option value="4">4 - Private Hospital</option>
+                        <option value="5">5 - Private Clinic</option>
+                        <option value="6">6 - Others</option>
+                        <option value="7">7 - Don't know</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr class="sdg_childdelivery_o_tr">
+                    <td class="float-right">Other place of delivery</td>
+                    <td><input name="sdg_childdelivery_o" id="sdg_childdelivery_o" value="" type="text"
+                        class="form-control form-control-sm sdg_withchild"></td>
+                  </tr>
+                  <tr>
+                    <td>63. Who assisted <i><b class="dfname">_____</b></i> at the delivery</td>
+                    <td>
+                      <select name="sdg_deliverassist" id="sdg_deliverassist"
+                        class="form-control form-control-sm sdg_inputs">
+                        <option></option>
+                        <option value="1">1 - Doctor</option>
+                        <option value="2">2 - Nurse</option>
+                        <option value="3">3 - Midwife</option>
+                        <option value="4">4 - Trained Hilot</option>
+                        <option value="5">5 - Untrained Hilot</option>
+                        <option value="6">6 - Relatives/Friends</option>
+                        <option value="7">7 - Others</option>
+                        <option value="8">8 - Don't know</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr class="sdg_deliverassist_o_tr">
+                    <td class="float-right">Other person who assisted in delivery of child</td>
+                    <td><input name="sdg_deliverassist_o" id="sdg_deliverassist_o" value="" type="text"
+                        class="form-control form-control-sm sdg_withchild"></td>
+                  </tr>
+                  <tr>
+                    <td>64. Did <i><b class="dfname">_____</b></i> breastfeed this child</td>
+                    <td>
+                      <select name="sdg_breastfeedind" id="sdg_breastfeedind"
+                        class="form-control form-control-sm sdg_inputs">
+                        <option></option>
+                        <option value="1">1 - Yes</option>
+                        <option value="2">2 - No</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>65. How many months did <i><b class="dfname">_____</b></i> breastfeed this
+                      child</td>
+                    <td><input name="sdg_breastfeedlen" id="sdg_breastfeedlen" value="" type="number" min="0"
+                        class="form-control form-control-sm sdg_withchild" placeholder="Number of months"></td>
+                  </tr>
+                  <tr>
+                    <td>66. How many months of exclusive breastfeeding</td>
+                    <td><input name="sdg_breastfeedexlen" id="sdg_breastfeedexlen" value="" type="number" min="0"
+                        class="form-control form-control-sm sdg_withchild" placeholder="Number of months"></td>
+                  </tr>
+                  <tr>
+                    <td>67. What month started giving infant formula</td>
+                    <td><input name="sdg_startinfantformula" id="sdg_startinfantformula" value="" type="number" min="0"
+                        class="form-control form-control-sm sdg_withchild" placeholder="Age in months"></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-warning float-left text-light add_edit_hpq" type="reset">Reset</button>
+            <button class="btn btn-secondary text-light add_edit_hpq" type="button"
+              data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary text-light add_edit_hpq" type="submit">Confirm</button>
+            <button class="btn btn-secondary text-light view_hpq" type="button" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Deceased Modal -->
+  <div class="modal fade" id="adddeceasedModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add new entry</h5>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"><i
+              class="bi bi-x-lg"></i></button>
+        </div>
+        <form id="adddeceased_form" method="post">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12 col-lg-12">
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Previous member</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr hidden>
+                      <td></td>
+                      <td><input name="id" id="id" value="" readonly></td>
+                    </tr>
+                    <tr hidden>
+                      <td></td>
+                      <td><input name="hpq_id" id="hpq_id" value="" readonly></td>
+                    </tr>
+                    <tr hidden>
+                      <td>Dead index</td>
+                      <td><input name="dindex" id="dindex" value="" readonly></td>
+                    </tr>
+                    <tr>
+                      <td>69a. Last name</td>
+                      <td><input id="dlname" name="dlname" value="" type="text" class="form-control form-control-sm"
+                          required="required">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>69b. First name</td>
+                      <td><input id="dfname" name="dfname" value="" type="text" class="form-control form-control-sm"
+                          required="required"></td>
+                    </tr>
+                    <tr>
+                      <td>69b. Middle name</td>
+                      <td><input id="dmname" name="dmname" value="" type="text" class="form-control form-control-sm"
+                          required="required"></td>
+                    </tr>
+                    <tr>
+                      <td>72. Sex</td>
+                      <td>
+                        <select id="dsex" name="dsex" class="form-control form-control-sm" required="required">
+                          <option></option>
+                          <option value="1">1 - Male</option>
+                          <option value="2">2 - Female</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>71. Age</td>
+                      <td><input id="dage_yr" name="dage_yr" value="" type="number" class="form-control form-control-sm"
+                          required="required">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>72. Cause of death</td>
+                      <td>
+                        <select id="causeofdeath" name="causeofdeath" class="form-control form-control-sm"
+                          required="required">
+                          <option></option>
+                          <option value="1">1 - Heart disease</option>
+                          <option value="2">2 - Disease of the Vascular System</option>
+                          <option value="3">3 - Pneumonia</option>
+                          <option value="4">4 - Tuberculosis</option>
+                          <option value="5">5 - Cancer</option>
+                          <option value="6">6 - Diarrhea</option>
+                          <option value="7">7 - Complication during pregnancy of childbirth
+                          </option>
+                          <option value="8">8 - Vehicular accident</option>
+                          <option value="9">9 - Diabetes</option>
+                          <option value="10">10 - Disease of the Lungs</option>
+                          <option value="11">11 - Disease of the Kidney</option>
+                          <option value="12">12 - Murdered</option>
+                          <option value="13">13 - Others</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="causeofdeath_o_tr">
+                      <td class="float-right">Other cause of death</td>
+                      <td><input id="causeofdeath_o" name="causeofdeath_o" value="" type="text"
+                          class="form-control form-control-sm">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary text-light add_edit_hpq" type="button"
+              data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary text-light add_edit_hpq" type="submit">Confirm</button>
+            <button class="btn btn-secondary text-light view_hpq" type="button" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Programs Modal -->
+  <div class="modal fade" id="addprogModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Disabled Backdrop</h5>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"><i
+              class="bi bi-x-lg"></i></button>
+        </div>
+        <form id="addprog_form" method="post">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12 col-lg-12">
+                <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th colspan="2">Programs</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr hidden>
+                      <td>Prog index</td>
+                      <td>
+                        <input name="id" id="id" value="" required="required">
+                        <input name="hpq_id" id="hpq_id" value="" required="required">
+                        <input name="pindex" id="pindex" value="" required="required">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Type of program</td>
+                      <td>
+                        <select name="prog_type" id="prog_type" class="form-control form-control-sm"
+                          required="required">
+                          <option></option>
+                          <option value="1">1 - Sustainable Livelihood Program (DSWD)</option>
+                          <option value="2">2 - Food for School</option>
+                          <option value="3">3 - Food for Work/Cash for Work</option>
+                          <option value="4">4 - Social Pension for Indigent Senior Citizen
+                          </option>
+                          <option value="5">5 - Pantawid Pamilyan Pilipino Program
+                            (4Ps)/KALAHI-CIDDSS/Listahan</option>
+                          <option value="6">6 - Agrarian Reform Community Development Program
+                            (ARCDP)</option>
+                          <option value="7">7 - Training for Work Scholarship Program (TWSP)
+                          </option>
+                          <option value="8">8 - Community-Based Employment Program (CBEP)
+                          </option>
+                          <option value="9">9 - Health care Insurance
+                            (Maxicare/Medicare/Intellicare/etc.)</option>
+                          <option value="10">10 - Gender and Development Programs (Teenage
+                            Pregnancy Seminar,
+                            PhilHealth Enrollment Program, Mental Health Program,
+                            Livelihood Program, Teen Center, Women's Month Program, Women
+                            and Family Welfare Program,
+                            Anti-VAWC/Child abuse Program, Solo Parent Program, Reproductive
+                            Health/HIV-AIDS Program,
+                            Scholarship/Educational Assistance, Story-Reading Program, Dear
+                            Santa Activity,
+                            etc.)</option>
+                          <option value="11">11 - Health Care Assistance Program</option>
+                          <option value="12">12 - Supplemental Feeding Program</option>
+                          <option value="13">13 - Educational Assistance/Scholarship Program
+                          </option>
+                          <option value="14">14 - Skills or Livelihood Training Program
+                          </option>
+                          <option value="15">15 - Credit/Lending Program</option>
+                          <option value="16">16 - Housing Program</option>
+                          <option value="17">17 - LGU Gift Giving / Pamaskong Handog</option>
+                          <option value="18">18 - Longevity Cash Gift for Indigent Seinor
+                            Citizen</option>
+                          <option value="19">19 - Other type of program</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr id="prog_type_o_tr" class="hidethis">
+                      <td>Other type of program</td>
+                      <td>
+                        <input name="prog_type_o" id="prog_type_o" value="" type="text"
+                          class="form-control form-control-sm">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Name of program</td>
+                      <td>
+                        <input name="prog_name" id="prog_name" value="" type="text" class="form-control form-control-sm"
+                          required="required">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Implementor of program</td>
+                      <td>
+                        <select name="prog_impl" id="prog_impl" class="form-control form-control-sm"
+                          required="required">
+                          <option></option>
+                          <option value="1">1 - National</option>
+                          <option value="2">2 - Province</option>
+                          <option value="3">3 - City/Municipality</option>
+                          <option value="4">4 - Barangay</option>
+                          <option value="5">5 - Congress/District</option>
+                          <option value="6">6 - Private Organizations/NGOs</option>
+                          <option value="7">7 - Don't know</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Beneficiary of the program</td>
+                      <td id="hpq_ref">
+                      </td>
+                    </tr>
+                    <tr id="mem_ref_none" class="hidethis">
+                      <td colspan="2"><i class="text-danger">Select atleast one member of the
+                          household to continue.</i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a class="btn btn-secondary text-light add_edit_hpq" type="button" data-bs-dismiss="modal"
+              aria-label="Close">Cancel</a>
+            <button id="addprogbtn" type="submit" class="btn btn-primary text-light add_edit_hpq">Confirm</button>
+            <a class="btn btn-secondary text-light view_hpq" type="button" data-bs-dismiss="modal"
+              aria-label="Close">Close</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- User Profile Modal-->
+  <div class="modal fade" id="user-modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><b>User Profile</b></h5>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"><i
+              class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <table class="table table-sm table-borderless text-dark" width="100%" cellspacing="0">
+                <tbody>
+                  <tr>
+                    <td>Last name</td>
+                    <td>
+                      <input value="" type="text" class="form-control form-control-sm last_name" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>First name</td>
+                    <td>
+                      <input value="" type="text" class="form-control form-control-sm first_name" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Middle name</td>
+                    <td>
+                      <input value="" type="text" class="form-control form-control-sm mid_name" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Username</td>
+                    <td>
+                      <input value="" type="text" class="form-control form-control-sm username" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Mobile number</td>
+                    <td>
+                      <input value="" type="text" class="form-control form-control-sm cpnumber" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Date of Birth</td>
+                    <td>
+                      <input value="" type="text" class="form-control form-control-sm birth_date" readonly>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary text-light" type="button" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Upload message Modal-->
+  <div class="modal fade" id="upload-modal" tabindex="-1" role="dialog" aria-labelledby="alert-modal" aria-hidden="true"
+    data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="upload-title"></h5>
+        </div>
+        <div class="modal-body">
+          <span id="upload-message"></span>
+        </div>
+        <div class="modal-footer upload-modal-btn hidethis">
+          <a class="btn btn-danger btn-ok text-light" data-bs-dismiss="modal" onclick="recoverInstancelist();">Okay</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Message Modal-->
+  <div class="modal fade" id="msg-modal" tabindex="-1" role="dialog" aria-labelledby="msg-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <span id="msg-message"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/jquery/jquery.js"></script>
+  <script src="assets/vendor/jquery-serializejson/jquery.serializejson.js"></script>
+  <script src="assets/vendor/jquery-easing/jquery.easing.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="assets/vendor/sweetalert2/sweetalert2.all.js"></script>
+  <script src="assets/vendor/leaflet/leaflet.js"></script>
+
+  <script src="assets/vendor/sql/sql.js"></script>
+
+  <script src="assets/js/Leaflet.TileLayer.MBTiles.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/encoder-temp.js"></script>
+  <script src="assets/js/bounds.js"></script>
+  <script src="assets/js/pages.js"></script>
+
+  <!-- DataTables Main JS File -->
+  <script src="assets/vendor/datatables/jquery.dataTables.js"></script>
+  <script src="assets/vendor/datatables/dataTables.bootstrap5.js"></script>
+
+</body>
+
+</html>

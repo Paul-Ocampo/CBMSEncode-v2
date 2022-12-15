@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="description" content="CBMS Encoding App">
+  <meta name="author" content="Paul Victoriano Ocampo">
+
+  <title></title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.ico" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/sweetalert2/sweetalert2.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <main>
+    <div class="container">
+      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 d-flex flex-column align-items-center justify-content-center">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="pt-4 pb-2">
+                    <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
+                    <p class="text-center small">Enter your username & password to login</p>
+                  </div>
+                  <form id="loginForm" class="row g-3 needs-validation" method="POST">
+                    <div class="col-12">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username"
+                          required="required">
+                        <label for="username">Username</label>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-floating">
+                        <input type="password" class="form-control" id="pword" name="pword" placeholder="Password"
+                          required="required">
+                        <label for="pword">Password</label>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary w-100" type="submit">Login</button>
+                    </div>
+                    <div class="col-12">
+                      <p class="small mb-0">Can't login? <a class="small" href="#" onclick="syncDB();">Sync database</a>
+                      </p>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="credits">
+                Developed by: <a href="#">Paul Victoriano Ocampo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main><!-- End #main -->
+  <!-- Message Modal-->
+  <div class="modal fade" id="msg-modal" tabindex="-1" role="dialog" aria-labelledby="msg-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-dark">
+          <span id="msg-message"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/jquery/jquery.js"></script>
+  <script src="assets/vendor/jquery-serializejson/jquery.serializejson.js"></script>
+  <script src="assets/vendor/jquery-easing/jquery.easing.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="assets/vendor/sweetalert2/sweetalert2.all.js"></script>
+
+  <script>
+
+    $(document).ready(function () {
+
+      var isLoggedIn = Android.checkLoggedIn();
+
+      if (isLoggedIn == "true") {
+        window.location.href = "index.html";
+      }
+
+    });
+
+  </script>
+  <script>
+
+    $("#loginForm").on("submit", function (e) {
+      e.preventDefault();
+
+      var username = $("#username").val();
+      var pword = $("#pword").val();
+
+      switch (Android.checkLogin(username, pword)) {
+
+        case "0":
+          userDetails = JSON.parse(Android.getLoggedInUser());
+          username = userDetails["username"];
+          accessLevel = userDetails["accessLevel"] * 1;
+          Swal.fire({
+            title: 'Login success',
+            html: `You are logged in as <b>${username}</b>`,
+            icon: 'success',
+            timerProgressBar: true,
+            timer: 2000
+          }).then((resul) => {
+            window.location.href = "index.html";
+          });
+          break;
+        case "1":
+          Swal.fire(
+            'Login failed',
+            'Your account is not yet activated.<br>Please contact your administrator to activate your account.',
+            'info'
+          )
+          break;
+        case "2":
+          Swal.fire(
+            'Login failed',
+            'Incorrect username or password.',
+            'error'
+          )
+          break;
+      }
+
+    });
+
+    function syncDB() {
+
+      $("#msg-modal").modal("show");
+      $("#msg-modal").find("#msg-message").html('<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><span class="ml-4"> Sync started...</span>');
+      Android.SyncDB("sync_DB");
+
+    }
+
+    function syncResponse(response) {
+
+      switch (response) {
+
+        case 0:
+          Swal.fire({
+            title: 'Success!',
+            html: 'Sync complete<br>You may now try to log in.',
+            icon: 'success',
+            timer: 3000,
+            showConfirmButton: false
+          }).then(function () {
+            $("#msg-modal").modal("hide");
+          })
+          break;
+        case 1:
+          Swal.fire({
+            title: 'Oops! Something went wrong.',
+            html: 'There was an error while trying to sync database.',
+            icon: 'error',
+          }).then(function () {
+            $("#msg-modal").modal("hide");
+          })
+          break;
+        case 2:
+          Swal.fire({
+            title: 'Server unreachable!',
+            html: 'Couldn`t open connection to server.<br>Please check your internet connection.',
+            icon: 'error',
+          }).then(function () {
+            $("#msg-modal").modal("hide");
+          })
+          break;
+      }
+
+    }
+  </script>
+</body>
+
+</html>
