@@ -25,7 +25,7 @@ public class Uploader {
     final Context context;
     FileManager fileManager;
     String hpq_data;
-    private NetworkResponse networkResponse;
+    Boolean waitingResponse;
 
     public Uploader(Context c) {
         context = c;
@@ -74,10 +74,14 @@ public class Uploader {
             for (int i = 0; i < instanceslist.length(); i++) {
 
                 String instance_ID = instanceslist.getString(i);
-
+                waitingResponse = true;
                 Log.d("Uploading form", instance_ID);
                 hpq_data = fileManager.getInstance(instance_ID + ".json");
                 send_hpq(hpq_data, instance_ID);
+
+                while (waitingResponse) {
+
+                }
 
             }
             send_hpq("end", "end");
@@ -109,7 +113,6 @@ public class Uploader {
 
 
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                networkResponse = response;
                 return super.parseNetworkResponse(response);
 
             }
@@ -129,7 +132,10 @@ public class Uploader {
     }
 
     public void uploadResponse(String response) {
-        Log.i("tagconvertstr", "[" + response + "]");
+
+        waitingResponse = false;
+
+        Log.i("uploadResponse", "[" + response + "]");
 
         final String finalRes = response;
         try {

@@ -275,7 +275,6 @@ public class FileManager {
 
         InputStream inputStream = null;
         OutputStream outputStream = null;
-        Log.d("copyRaster", "---------------------------------------------------------------------------------------------------------------------------");
 
         File rasterFileToCopy = new File(fromPath + "/raster.mbtiles");
         File oldRasterFile = new File(toPath + "/raster.mbtiles");

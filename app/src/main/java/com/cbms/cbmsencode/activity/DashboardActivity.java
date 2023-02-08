@@ -15,10 +15,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
@@ -53,7 +55,9 @@ public class DashboardActivity extends AppCompatActivity {
     public static WebView wv;
     public static SharedPreferences prefs;
     boolean doubleBackToExitPressedOnce = false;
-
+    private String homeURL = "https://appassets.androidplatform.net/assets/www/index.html";
+    private String currentURL = "";
+    private boolean canExit;
     FileManager fileManager;
 
     // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
@@ -125,12 +129,12 @@ public class DashboardActivity extends AppCompatActivity {
         String databasePath = wv.getContext().getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
         webSettings.setGeolocationEnabled(true);
         webSettings.setGeolocationDatabasePath(databasePath);
-/**
+
         webSettings.setAppCacheEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         String cachePath = wv.getContext().getApplicationContext().getDir("cache", Context.MODE_PRIVATE).getPath();
         webSettings.setAppCachePath(cachePath);
-*/
+
         webSettings.setDomStorageEnabled(true);
 
         wv.setWebChromeClient(new MyChromeWebViewClient());
@@ -144,6 +148,11 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 return assetLoader.shouldInterceptRequest(request.getUrl());
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                currentURL = view.getUrl();
             }
         });
         wv.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
@@ -167,6 +176,48 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.d("CDA", "onKeyDown Called");
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        // if not home page go to home page.
+        if(homeURL == currentURL){
+
+            if(canExit)
+                super.onBackPressed();
+            else{
+                canExit = true;
+                Toast.makeText(getApplicationContext(), "Press again", Toast.LENGTH_SHORT).show();
+            }
+            mHandler.sendEmptyMessageDelayed(1, 2000);
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    public Handler mHandler = new Handler(){
+
+        public void handleMessage(android.os.Message msg) {
+
+            switch (msg.what) {
+                case 1:
+                    canExit = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     private boolean checkPermission() {
         if (SDK_INT >= Build.VERSION_CODES.R) {
             return Environment.isExternalStorageManager();
